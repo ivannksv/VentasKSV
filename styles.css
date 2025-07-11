@@ -1,0 +1,461 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-y: auto; /* ✅ permite scroll si hay más contenido */
+  font-family: sans-serif;
+}
+
+header {
+  height: 15vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('img/fondoHeader.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  position: sticky;
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.logo {
+  max-height: 70%;
+  max-width: 90%;
+}
+
+main {
+  height: 75vh;
+  overflow: hidden;
+  position: relative;
+  background: url('img/fondoProductos.avif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.slider {
+  height: 100%;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  touch-action: pan-y;
+}
+
+.slides {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+
+.slides img {
+  height: 100%;
+  width: 100vw;
+  object-fit: cover;
+  flex-shrink: 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+footer {
+  height: 10vh;
+  background-color: #000000;
+  color: white;
+}
+
+.footer-final {
+  text-align: center;
+  border-top: 1px solid #333;
+  color: #aaa;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  footer {
+    height: 5vh;
+  }
+  .footer-final {
+    font-size: 12px;
+    padding-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    max-height: 60%;
+  }
+}
+
+#whatsapp-bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  z-index: 1000;
+  border-radius: 50%;
+  background-color: #25D366;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#whatsapp-bubble img {
+  width: 36px;
+  height: 36px;
+}
+
+#whatsapp-bubble:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pedido-bar {
+  height: 5vh;
+  background-color: #000000;
+  color: #aaa;
+  text-align: center;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.pedido-btn {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: bold;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.pedido-btn:hover {
+  color: #126c09;
+  text-decoration: underline;
+}
+
+/*Menu desplegable*/
+
+h1{
+  color: #ffffff;
+}
+
+.menu-toggle {
+  color: white;
+  position: absolute;
+  left: 30px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 11;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100vh;
+  background: linear-gradient(180deg, #111, #222);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.2rem;
+  gap: 1rem;
+  transition: left 0.3s ease;
+  z-index: 9999;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.side-title {
+  color: #ffffff;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.5rem;
+}
+
+.side-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #196727;
+  color: white;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.side-btn:hover {
+  background: #444;
+  transform: scale(1.03);
+}
+
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9998;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.side-menu.active {
+  left: 0;
+}
+
+/*Seccion productos*/
+
+main.productos {
+  padding: 2rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  background-color: #f9f9f9;
+  overflow-y: auto; /* ✅ permite scroll si hay muchos productos */
+}
+
+.producto {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 1rem;
+}
+
+.producto img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.producto p {
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.producto .precio {
+  font-size: 1rem;
+  color: #15753d;
+  font-weight: bold;
+}
+
+
+main, main.productos {
+  position: relative;
+  z-index: 1;
+}
+
+/*Flecha volver header*/
+
+.back-arrow {
+  position: absolute;
+  left: 20px;
+  font-size: 2rem;
+  color: white;
+  text-decoration: none;
+  z-index: 11;
+  padding: 0.2rem 0.5rem;
+  background-color: rgba(0,0,0,0.4);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.back-arrow:hover {
+  background-color: rgba(0,0,0,0.6);
+}
+
+/*Estilos de info productos*/
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  max-height: 90vh; /* Limita la altura al 90% de la pantalla */
+  overflow-y: auto;  /* Habilita scroll si el contenido es muy grande */
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.modal-content h2 {
+  margin-bottom: 0.5rem;
+}
+
+.modal-content p {
+  margin: 0.5rem 0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Botón lupa */
+.search-toggle {
+  position: absolute;
+  right: 30px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  z-index: 11;
+}
+
+/* Overlay para buscador */
+#searchOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9998;
+}
+
+#searchOverlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal del buscador */
+.search-modal {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100vh;
+  background: url('img/fondoProductos.avif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem 1rem;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+  z-index: 9999;
+  overflow-y: auto;
+}
+
+.search-modal.active {
+  right: 0;
+}
+
+#modalSearchInput {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 2rem auto;
+  display: block;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+/* Resultados del modal */
+#modalResultados {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.resultado {
+  background: rgb(255, 255, 255);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.resultado img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.resultado h4 {
+  margin-top: 0.6rem;
+  font-size: 1rem;
+  color: #222;
+}
+
+.resultado p {
+  font-weight: bold;
+  color: #27ae60;
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+}
+

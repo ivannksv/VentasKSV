@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ventas KSV</title>
+  <link rel="shortcut icon" href="img/logo.jpg" type="image/x-icon" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Botón flotante carrito en esquina inferior derecha */
+    #boton-carrito-wsp {
+      height: 80px;
+      width: 80px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      background-color: #4caf50;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #boton-carrito-wsp img {
+      width: 50px;
+      height: 50px;
+    }
+
+    /* Sidebar carrito */
+    #carrito-sidebar {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 320px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      z-index: 999;
+      padding: 20px;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    #carrito-sidebar.mostrar {
+      right: 0;
+    }
+
+    #carrito-sidebar h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .carrito-producto {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+    }
+
+    .carrito-producto p {
+      margin: 4px 0;
+    }
+
+    #total {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    #enviar-pedido {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    /* Estilos botones agregar */
+    .agregar-btn {
+      margin-top: 8px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .agregar-btn:hover {
+      background-color: #3e8e41;
+    }
+    #fondo-oscuro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* oscuro translúcido */
+      z-index: 998;
+      display: none; /* oculto por defecto */
+    }
+    #fondo-oscuro.mostrar {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="back-arrow">←</a>
+    <img src="img/logo.jpg" alt="Logo" class="logo" />
+  </header>
+
+  <div class="pedido-bar">
+    Realiza <a href="https://wa.me/5491167186562" class="pedido-btn">aquí</a> tu pedido
+  </div>
+
+  <!-- BOTÓN FLOTANTE para abrir carrito -->
+  <button id="boton-carrito-wsp" title="Ver pedido">
+    <img src="img/carrito.png" alt="Carrito" />
+  </button>
+
+  <!-- SIDEBAR DEL CARRITO -->
+  <div id="carrito-sidebar">
+    <h2>Tu pedido</h2>
+    <div id="lista-carrito"></div>
+    <p id="total">Total: $0</p>
+    <button id="enviar-pedido">Enviar por WhatsApp</button>
+  </div>
+
+  <!-- FONDO OSCURO -->
+  <div id="fondo-oscuro"></div>
+
+  <main class="productos">
+    <div class="producto">
+      <img src="img/he1.webp" alt="Yerba 1" />
+      <p>CHOCOLATE & ORANGE X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he2.webp" alt="Yerba 2" />
+      <p>AMAZONIAN GREEN X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he3.webp" alt="Yerba 3" />
+      <p>PATAGONIAN BERRIES X 40 G </p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he4.webp" alt="Yerba 4" />
+      <p>ANCIENT RASPBERRY X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he5.webp" alt="Yerba 1" />
+      <p>ROOIBOS RED FRUITS X 40 G </p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he6.webp" alt="Yerba 1" />
+      <p>CHINESE GREEN TEA X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/He7.webp" alt="Yerba 1" />
+      <p>CHOCOLATE TEMPTATION X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he8.webp" alt="Yerba 1" />
+      <p>HEBRAS VERDE SENCHA X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he9.webp" alt="Yerba 1" />
+      <p>HEBRAS NEGRO CEYLON X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he10.webp" alt="Yerba 1" />
+      <p>VAINILLA DOYPACK X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he11.webp" alt="Yerba 1" />
+      <p>ARANDANO DOYPACK X 50 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+    <div class="producto">
+      <img src="img/he12.webp" alt="Yerba 1" />
+      <p>HEBRAS NEGRO CHOCOLATE & MENTA DOYPACK X 40 G</p>
+      <p class="precio">$2.000</p>
+      <button class="agregar-btn">Agregar al pedido</button>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <img id="modal-img" src="" alt="Producto" />
+      <h2 id="modal-title">Título</h2>
+      <p id="modal-price">Precio</p>
+      <p id="modal-info">Descripción del producto...</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-final">
+      <a class="footer-final" href="https://ivannksv.github.io/DisenadorWebIK/">&copy; Diseño: Iván Karabencsov. Todos los derechos reservados.</a>
+    </div>
+  </footer>
+
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const productos = document.querySelectorAll(".producto");
+  const botonesAgregar = document.querySelectorAll(".agregar-btn");
+  const modal = document.getElementById("modal");
+  const modalImg = document.getElementById("modal-img");
+  const modalTitle = document.getElementById("modal-title");
+  const modalPrice = document.getElementById("modal-price");
+  const modalInfo = document.getElementById("modal-info");
+  const closeBtn = document.getElementById("closeModal");
+
+  const botonCarritoWsp = document.getElementById("boton-carrito-wsp");
+  const carritoSidebar = document.getElementById("carrito-sidebar");
+  const fondoOscuro = document.getElementById("fondo-oscuro");
+  const listaCarrito = document.getElementById("lista-carrito");
+  const totalEl = document.getElementById("total");
+  const enviarBtn = document.getElementById("enviar-pedido");
+
+  const productosData = [
+    {
+      nombre: "CHOCOLATE & ORANGE X 40 G",
+      precio: "$1.800",
+      descripcion: "Té negro con canela, cacao, naranja y miel. Mezcla de té negro ceylon con cáscara de naranja, cascarilla de cacao, chocolate y miel. De sabor intenso, agradable para los amantes de lo dulce y cítrico.",
+      imagen: "img/he1.webp"
+    },
+    {
+      nombre: "AMAZONIAN GREEN X 40 G",
+      precio: "$1.700",
+      descripcion: "Té verde con menta, jengibre y maracuyá. Blend digestivo con notas frutales que combinan con la frescura de la menta y los trocitos de jengibre.",
+      imagen: "img/he2.webp"
+    },
+    {
+      nombre: "PATAGONIAN BERRIES X 40 G ",
+      precio: "$2.200",
+      descripcion: "Té negro con hibisco, rosa mosqueta, naranja y frutos rojos. Blend de té negro de ceylon con frutos rojos patagónicos. Suave y frutal, con notas frescas de la rosa mosqueta",
+      imagen: "img/he3.webp"
+    },
+    {
+      nombre: "ANCIENT RASPBERRY X 40 G",
+      precio: "$2.000",
+      descripcion: "Té pu erh con hibisco y frambuesa.. Un blend sofisticado que combina la profundidad terrosa del té pu erh con la frescura vibrante de la frambuesa y el toque floral del hibisco.",
+      imagen: "img/he4.webp"
+    },
+    {
+      nombre: "ROOIBOS RED FRUITS X 40 G ",
+      precio: "$2.200",
+      descripcion: "Rooibos con frutas, menta & pétalos de rosas. Blend elaborado a base de Rooibos. De color ambar y ligeramente dulce, con notas de frutilla y un toque refrescante de menta búlgara. No contiene cafeína",
+      imagen: "img/he5.webp"
+    },
+    {
+      nombre: "CHINESE GREEN TEA X 40 G",
+      precio: "$2.200",
+      descripcion: "Té verde con jazmín y rosas. Té verde sencha proveniente de China, se caracteriza por sus notas suaves que junto a las flores de jazmín y los pétalos de rosas lo hacen mas dulce, aromático y delicado.",
+      imagen: "img/he6.webp"
+    },
+    {
+      nombre: "CHOCOLATE TEMPTATION X 40 G",
+      precio: "$2.200",
+      descripcion: "Té rojo con cacao y caléndula",
+      imagen: "img/he7.webp"
+    },
+    {
+      nombre: "HEBRAS VERDE SENCHA X 40 G",
+      precio: "$2.200",
+      descripcion: "Origen: China. Excelente té verde chino, antioxidante, herbal y fresco, elaborado bajo el método vaporizado de las hojas, Posee alta astringencia.",
+      imagen: "img/he8.webp"
+    },
+    {
+      nombre: "HEBRAS NEGRO CEYLON X 40 G",
+      precio: "$2.200",
+      descripcion: "Origen: Sri Lanka. Es uno de los tés mas populares del mundo. Posee un gran cuerpo, sabor intenso y astringente. Un té ideal para tomar a cualquier momento del día.",
+      imagen: "img/he9.webp"
+    },
+    {
+      nombre: "VAINILLA DOYPACK X 40 G",
+      precio: "$2.200",
+      descripcion: "Té negro con vainilla & aciano. Es un blend que ofrece una experiencia de degustación equilibrada y armoniosa, ideal para aquellos que buscan un té clásico con un giro elegante y aromático.",
+      imagen: "img/he10.webp"
+    },
+    {
+      nombre: "ARANDANO DOYPACK X 50 G",
+      precio: "$2.200",
+      descripcion: "Hibisco, manzana, cáscara de naranja, rosa mosqueta, arándano & frutos rojos. Infusión libre de teína que combina arándano y frutos rojos patagonicos con cáscara de naranja. Las flores de hibisco le aportan acidez al blend. Ideal para tomar en cualquier momento del día.",
+      imagen: "img/he11.webp"
+    },
+    {
+      nombre: "HEBRAS NEGRO CHOCOLATE & MENTA DOYPACK X 40 G",
+      precio: "$2.200",
+      descripcion: "Té negro ceylon, cacao & menta. Base de té negro Ceylon proveniente de Sri Lanka que se combina con cascarilla de cacao, chocolate y hojas de menta. Dulce y fresco, ideal para acompañar postres.",
+      imagen: "img/he12.webp"
+    }
+  ];
+
+  function formatearNumero(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  productos.forEach((producto, i) => {
+    producto.addEventListener("click", (e) => {
+      if (e.target.classList.contains("agregar-btn")) return;
+      const data = productosData[i];
+      modalImg.src = data.imagen;
+      modalTitle.textContent = data.nombre;
+      modalPrice.textContent = data.precio;
+      modalInfo.textContent = data.descripcion;
+      modal.style.display = "flex";
+    });
+  });
+
+  botonesAgregar.forEach((btn, i) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const producto = productosData[i];
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+      // NUEVO: agregar producto con cantidad 1 o incrementar si ya existe
+      const index = carrito.findIndex(p => p.nombre === producto.nombre);
+      if (index !== -1) {
+        carrito[index].cantidad += 1;
+      } else {
+        carrito.push({ ...producto, cantidad: 1 });
+      }
+
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      alert(`${producto.nombre} agregado al pedido`);
+      actualizarSidebar();
+    });
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // FUNCION ACTUALIZADA PARA MOSTRAR CANTIDAD, BOTONES DE +, -, ELIMINAR
+  function actualizarSidebar() {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    listaCarrito.innerHTML = "";
+    let total = 0;
+
+    if (carrito.length === 0) {
+      listaCarrito.innerHTML = "<p>No hay productos en el pedido.</p>";
+      totalEl.textContent = "Total: $0";
+      return;
+    }
+
+    carrito.forEach((producto, i) => {
+      const div = document.createElement("div");
+      div.classList.add("carrito-producto");
+
+      // Extraemos precio numérico para cálculo
+      const precioNum = Number(producto.precio.replace(/\./g, '').replace('$', '').replace(',', '.'));
+
+      div.innerHTML = `
+        <p><strong>${producto.nombre}</strong></p>
+        <p>Precio unitario: ${producto.precio}</p>
+        <p>
+          Cantidad: 
+          <button class="menos" data-index="${i}">-</button>
+          <span class="cantidad">${producto.cantidad}</span>
+          <button class="mas" data-index="${i}">+</button>
+        </p>
+        <p>Subtotal: $${formatearNumero(precioNum * producto.cantidad)}</p>
+        <button class="eliminar" data-index="${i}" style="background:#e74c3c; color:#fff; border:none; border-radius:4px; cursor:pointer; padding:2px 6px;">Eliminar</button>
+      `;
+      listaCarrito.appendChild(div);
+
+      total += precioNum * producto.cantidad;
+    });
+
+    totalEl.textContent = `Total: $${formatearNumero(total)}`;
+
+    // Eventos para botones +, -, eliminar
+    document.querySelectorAll(".mas").forEach(btn => {
+      btn.onclick = () => {
+        const idx = btn.getAttribute("data-index");
+        const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        carrito[idx].cantidad += 1;
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        actualizarSidebar();
+      };
+    });
+
+    document.querySelectorAll(".menos").forEach(btn => {
+      btn.onclick = () => {
+        const idx = btn.getAttribute("data-index");
+        const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        if (carrito[idx].cantidad > 1) {
+          carrito[idx].cantidad -= 1;
+          localStorage.setItem("carrito", JSON.stringify(carrito));
+          actualizarSidebar();
+        }
+      };
+    });
+
+    document.querySelectorAll(".eliminar").forEach(btn => {
+      btn.onclick = () => {
+        const idx = btn.getAttribute("data-index");
+        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        carrito.splice(idx, 1);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        actualizarSidebar();
+      };
+    });
+  }
+
+  botonCarritoWsp.addEventListener("click", () => {
+    carritoSidebar.classList.toggle("mostrar");
+    fondoOscuro.classList.toggle("mostrar");
+    actualizarSidebar();
+  });
+
+  fondoOscuro.addEventListener("click", () => {
+    carritoSidebar.classList.remove("mostrar");
+    fondoOscuro.classList.remove("mostrar");
+  });
+
+  enviarBtn.addEventListener("click", () => {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    if (carrito.length === 0) {
+      alert("No hay productos para enviar.");
+      return;
+    }
+
+    let mensaje = "Hola, quiero hacer el siguiente pedido:\n";
+    let total = 0;
+
+    carrito.forEach((producto, i) => {
+      const precioNum = Number(producto.precio.replace(/\./g, '').replace('$', '').replace(',', '.'));
+      total += precioNum * producto.cantidad;
+
+      mensaje += `${i + 1}. ${producto.nombre} x${producto.cantidad} - $${formatearNumero(precioNum * producto.cantidad)}\n`;
+    });
+
+    const totalFormateado = formatearNumero(total);
+    mensaje += `Total: $${totalFormateado}`;
+
+    const mensajeCodificado = encodeURIComponent(mensaje);
+    const telefono = "5491167186562";
+    const url = `https://wa.me/${telefono}?text=${mensajeCodificado}`;
+
+    window.open(url, "_blank");
+
+    localStorage.removeItem("carrito");
+    actualizarSidebar();
+    carritoSidebar.classList.remove("mostrar");
+  });
+
+  actualizarSidebar();
+});
+
+  
+  </script>
+
+</body>
+</html>

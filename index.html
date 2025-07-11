@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ventas KSV</title>
+  <link rel="shortcut icon" href="img/logo.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Botón flotante carrito en esquina inferior derecha */
+    #boton-carrito-wsp {
+      height: 80px;
+      width: 80px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      background-color: #4caf50;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #boton-carrito-wsp img {
+      width: 50px;
+      height: 50px;
+    }
+
+    /* Sidebar carrito */
+    #carrito-sidebar {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 320px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      z-index: 999;
+      padding: 20px;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    #carrito-sidebar.mostrar {
+      right: 0;
+    }
+
+    #carrito-sidebar h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .carrito-producto {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+    }
+
+    .carrito-producto p {
+      margin: 4px 0;
+    }
+
+    #total {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    #enviar-pedido {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    /* Estilos botones agregar */
+    .agregar-btn {
+      margin-top: 8px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .agregar-btn:hover {
+      background-color: #3e8e41;
+    }
+    #fondo-oscuro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* oscuro translúcido */
+      z-index: 998;
+      display: none; /* oculto por defecto */
+    }
+    #fondo-oscuro.mostrar {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+
+
+  <!-- HEADER -->
+  <header>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <img src="img/logo.jpg" alt="Logo" class="logo" />
+    <button class="search-toggle" id="searchToggle" style="background:none; border:none; cursor:pointer; z-index: 2;">
+    <img src="img/lupa.png" alt="Buscar" style="height: 35px; width: 35px; filter: invert(1);">
+  </button>
+  </header>
+
+  <div class="pedido-bar">
+  Realiza <a href="https://wa.me/5491167186562" class="pedido-btn">aquí</a> tu pedido
+  </div>
+
+  <!-- BOTÓN FLOTANTE para abrir carrito -->
+  <button id="boton-carrito-wsp" title="Ver pedido">
+    <img src="img/carrito.png" alt="Carrito" />
+  </button>
+
+  <!-- SIDEBAR DEL CARRITO -->
+  <div id="carrito-sidebar">
+    <h2>Tu pedido</h2>
+    <div id="lista-carrito"></div>
+    <p id="total">Total: $0</p>
+    <button id="enviar-pedido">Enviar por WhatsApp</button>
+  </div>
+
+  <!-- FONDO OSCURO -->
+  <div id="fondo-oscuro"></div>
+
+  <!-- MAIN -->
+  <main>
+    <div class="slider" id="slider">
+      <div class="slides">
+        <img src="img/i1.webp" alt="1" />
+        <img src="img/i2.webp" alt="2" />
+        <img src="img/i3.avif" alt="3" />
+        <img src="img/i4.webp" alt="4" />
+        <img src="img/i5.avif" alt="5" />
+        <img src="img/i6.avif" alt="6" />
+        <img src="img/i7.avif" alt="7" />
+        <img src="img/i8.avif" alt="8" />
+        <img src="img/i9.avif" alt="9" />
+        <img src="img/i10.avif" alt="10" />
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-final">
+      <a class="footer-final" href="https://ivannksv.github.io/DisenadorWebIK/">&copy; Diseño: Iván Karabencsov. Todos los derechos reservados.</a>
+    </div>
+  </footer>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MENU LATERAL -->
+  <nav class="side-menu" id="sideMenu">
+    <h2 class="side-title">Productos</h2>
+    <a href="yerba.html" class="side-btn">YERBA</a>
+    <a href="te.html" class="side-btn">TÉ</a>
+    <a href="hebras.html" class="side-btn">HEBRAS</a>
+    <a href="cafe.html" class="side-btn">CAFÉ</a>
+    <a href="suplementos.html" class="side-btn">SUPLEMENTOS</a>
+  </nav>
+
+  <!-- BUSCADOR MODAL (LUPA) -->
+  <div class="search-modal" id="searchModal">
+    <button id="closeSearch" aria-label="Cerrar buscador" style="position:absolute; top:10px; right:10px; font-size:1.5rem; background-color: rgba(0, 0, 0, 0.554); padding: 10px; border-radius: 10px; cursor:pointer; color:red;">✖</button>
+    <input type="text" id="modalSearchInput" placeholder="Buscar productos..." />
+    <div id="modalResultados"></div>
+  </div>
+
+    <!-- MODAL DE PRODUCTO -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeProductModal">&times;</span>
+      <img id="productModalImg" src="" alt="Producto" />
+      <h2 id="productModalTitle">Título</h2>
+      <p id="productModalPrice">Precio</p>
+      <p id="productModalDesc">Descripción</p>
+    </div>
+  </div>
+
+
+  <!-- SCRIPT -->
+  <script>
+    // SLIDER
+    const slider = document.querySelector('.slider');
+    const slides = document.querySelector('.slides');
+    const images = document.querySelectorAll('.slides img');
+
+    let index = 0;
+    let startX = 0;
+    let isDragging = false;
+
+    function showSlide(i) {
+      const total = images.length;
+      index = (i + total) % total;
+      slides.style.transform = `translateX(-${index * 100}vw)`;
+    }
+
+    let interval = setInterval(() => showSlide(index + 1), 5000);
+
+    slider.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+      clearInterval(interval);
+    });
+
+    slider.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const deltaX = e.touches[0].clientX - startX;
+      if (Math.abs(deltaX) > 50) {
+        showSlide(index + (deltaX > 0 ? -1 : 1));
+        isDragging = false;
+        interval = setInterval(() => showSlide(index + 1), 5000);
+      }
+    });
+
+    slider.addEventListener('mousedown', e => {
+      startX = e.clientX;
+      isDragging = true;
+      clearInterval(interval);
+    });
+
+    slider.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - startX;
+      if (Math.abs(deltaX) > 50) {
+        showSlide(index + (deltaX > 0 ? -1 : 1));
+      }
+      isDragging = false;
+      interval = setInterval(() => showSlide(index + 1), 5000);
+    });
+
+    // MENÚ LATERAL
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('overlay');
+
+    menuToggle.addEventListener('click', () => {
+      sideMenu.classList.add('active');
+      overlay.classList.add('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sideMenu.classList.remove('active');
+      overlay.classList.remove('active');
+      cerrarBuscador();
+    });
+
+    // BUSCADOR
+    const searchToggle = document.getElementById('searchToggle');
+    const searchModal = document.getElementById('searchModal');
+    const modalSearchInput = document.getElementById('modalSearchInput');
+    const modalResultados = document.getElementById('modalResultados');
+    const closeSearch = document.getElementById('closeSearch');
+
+    searchToggle.addEventListener("click", abrirBuscador);
+    closeSearch.addEventListener("click", cerrarBuscador);
+
+    function abrirBuscador() {
+      overlay.classList.add("active");
+      searchModal.classList.add("active");
+      modalSearchInput.focus();
+    }
+
+    function cerrarBuscador() {
+      overlay.classList.remove("active");
+      searchModal.classList.remove("active");
+      modalSearchInput.value = "";
+      modalResultados.innerHTML = "";
+    }
+
+    // EVENTO DE BÚSQUEDA
+    modalSearchInput.addEventListener("input", () => {
+      const valor = modalSearchInput.value.toLowerCase().trim();
+      modalResultados.innerHTML = '';
+
+      if (valor === '') return;
+
+      const filtrados = productos.filter(p =>
+        p.nombre.toLowerCase().includes(valor)
+      );
+
+      if (filtrados.length === 0) {
+        modalResultados.innerHTML = '<p>No se encontraron productos.</p>';
+        return;
+      }
+
+      function normalizarTexto(texto) {
+      return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    }
+
+    filtrados.forEach(p => {
+      const div = document.createElement('div');
+      div.classList.add('resultado');
+      div.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h4>${p.nombre}</h4>
+        <p>${p.precio}</p>
+      `;
+
+      div.addEventListener("click", () => {
+        const nombreNorm = normalizarTexto(p.nombre);
+
+        let destino = "";
+
+        if (nombreNorm.includes("YERBA")) destino = "yerba.html";
+        else if (nombreNorm.includes("TE")) destino = "te.html";
+        else if (nombreNorm.includes("HEBRAS")) destino = "hebras.html";
+        else if (nombreNorm.includes("CAFE")) destino = "cafe.html";
+        else destino = "suplementos.html";
+
+        const url = `${destino}?producto=${encodeURIComponent(p.nombre)}`;
+        window.location.href = url;
+      });
+
+      modalResultados.appendChild(div);
+    });
+
+    });
+    
+    const productos = [
+      {
+        nombre: "YERBA ORGANICA PURA X 500 G",
+        precio: "$1.800",
+        imagen: "img/yerba1.webp"
+      },
+      {
+        nombre: "YERBA MATE MANZANILLA, BOLDO Y MENTA X 500 G",
+        precio: "$1.700",
+        imagen: "img/yerba2.webp"
+      },
+      {
+        nombre: "YERBA MATE MOLIENDA FINA X 500 G",
+        precio: "$2.200",
+        imagen: "img/yerba3.webp"
+      },
+      {
+        nombre: "YERBA MATE MANGO MENTA DOYPACK X 150 G",
+        precio: "$2.000",
+        imagen: "img/yerba4.jpg"
+      },
+      {
+        nombre: "YERBA MATE COCO NARANJA DOYPACK X 150 G",
+        precio: "$1.800",
+        imagen: "img/yerba5.webp"
+      },
+      {
+        nombre: "YERBA MATE FRUTAL DOYPACK X 150 G",
+        precio: "$1.800",
+        imagen: "img/yerba6.webp"
+      },
+      {
+        nombre: "CAFE CON COLAGENO & MELENA DE LEON X 180 G",
+        precio: "$1.800",
+        imagen: "img/cafe1.webp"
+      },
+      {
+        nombre: "CAFE TOSTADO COLOMBIANO CON MELENA DE LEON X 180 G",
+        precio: "$1.700",
+        imagen: "img/cafe2.webp"
+      },
+      {
+        nombre: "BATIDOR ESPUMADOR CAFE",
+        precio: "$2.200",
+        imagen: "img/cafe3.webp"
+      },
+      {
+        nombre: "PRENSA FRANCESA C/ BASE CORCHO CAFE",
+        precio: "$2.000",
+        imagen: "img/yerba4.jpg"
+      },
+      {
+        nombre: "TE BLUEBERRY DREAMS X 20 SAQUITOS",
+        precio: "$1.800",
+        imagen: "img/te1.webp"
+      },
+      {
+        nombre: "TE MATCHA BERRIES X 20 SAQUITOS",
+        precio: "$1.700",
+        imagen: "img/te2.webp"
+      },
+      {
+        nombre: "TE ROOIBOS RED FRUITS X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te3.webp"
+      },
+      {
+        nombre: "TE SPICY CHAI X 20 SAQUITOS",
+        precio: "$2.000",
+        imagen: "img/te4.webp"
+      },
+      {
+        nombre: "TE CHOCOLATE BERRIES X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te5.webp"
+      },
+      {
+        nombre: "TE CHOCOLATE TEMPTATION X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te6.webp"
+      },
+      {
+        nombre: "TE ROOIBOS CARAMEL X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te7.webp"
+      },
+      {
+        nombre: "TE ARANDANO AZUL CON FRUTOS ROJOS & NARANJA X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te8.webp"
+      },
+      {
+        nombre: "TE JENGIBRE X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te9.webp"
+      },
+      {
+        nombre: "TE ARANDANO ROJO CON VAINILLA X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te10.webp"
+      },
+      {
+        nombre: "TE NEGRO CON CHOCOLATE & MENTA X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te11.webp"
+      },
+      {
+        nombre: "TE NEGRO CON CANELA X 20 SAQUITOS",
+        precio: "$2.200",
+        imagen: "img/te12.webp"
+      },
+      {
+        nombre: "COLAGENO HIDROLIZADO EN POLVO SIN SABOR",
+        precio: "$1.800",
+        imagen: "img/sup1.webp"
+      },
+      {
+        nombre: "COLAGENO EN COMPRIMIDOS",
+        precio: "$1.700",
+        imagen: "img/sup2.webp"
+      },
+      {
+        nombre: "COLAGENO HIDROLIZADO, TE BLANCO, CALCIO, VIT C, MAGNESIO, GARCINIA & GUARANA EN POLVO",
+        precio: "$2.200",
+        imagen: "img/sup3.webp"
+      },
+      {
+        nombre: "COLAGENO + CARTILAGO DE TIBURON",
+        precio: "$2.000",
+        imagen: "img/sup4.webp"
+      },
+      {
+        nombre: "COLAGENO HIDROLIZADO, ACIDO HIALURONICO, VIT C, CURCUMA & MAGNESIO EN POLVO",
+        precio: "$1.800",
+        imagen: "img/sup5.webp"
+      },
+      {
+        nombre: "COLAGENO HIDROLIZADO, VITAMINA C, CALCIO, MAGNESIO & ZINC",
+        precio: "$1.800",
+        imagen: "img/sup6.webp"
+      },
+      {
+        nombre: "COLAGENO HIDROLIZADO CON MATCHA, COENZIMA Q10 & REVERATROL X 200 G",
+        precio: "$1.800",
+        imagen: "img/sup7.webp"
+      },
+      {
+        nombre: "COLAGENO HIDROLIZADO, VIT C, CURCUMA Y MAGNESIO SIN SABOR X 200 G",
+        precio: "$1.800",
+        imagen: "img/sup8.webp"
+      },
+      {
+        nombre: "HEBRAS CHOCOLATE & ORANGE X 40 G",
+        precio: "$1.800",
+        imagen: "img/he1.webp"
+      },
+      {
+        nombre: "HEBRAS AMAZONIAN GREEN X 40 G",
+        precio: "$1.700",
+        imagen: "img/he2.webp"
+      },
+      {
+        nombre: "HEBRAS PATAGONIAN BERRIES X 40 G ",
+        precio: "$2.200",
+        imagen: "img/he3.webp"
+      },
+      {
+        nombre: "HEBRAS ANCIENT RASPBERRY X 40 G",
+        precio: "$2.000",
+        imagen: "img/he4.webp"
+      },
+      {
+        nombre: "HEBRAS ROOIBOS RED FRUITS X 40 G ",
+        precio: "$2.200",
+        imagen: "img/he5.webp"
+      },
+      {
+        nombre: "HEBRAS CHINESE GREEN TEA X 40 G",
+        precio: "$2.200",
+        imagen: "img/he6.webp"
+      },
+      {
+        nombre: "HEBRAS CHOCOLATE TEMPTATION X 40 G",
+        precio: "$2.200",
+        imagen: "img/he7.webp"
+      },
+      {
+        nombre: "HEBRAS VERDE SENCHA X 40 G",
+        precio: "$2.200",
+        imagen: "img/he8.webp"
+      },
+      {
+        nombre: "HEBRAS NEGRO CEYLON X 40 G",
+        precio: "$2.200",
+        imagen: "img/he9.webp"
+      },
+      {
+        nombre: "HEBRAS VAINILLA DOYPACK X 40 G",
+        precio: "$2.200",
+        imagen: "img/he10.webp"
+      },
+      {
+        nombre: "HEBRAS ARANDANO DOYPACK X 50 G",
+        precio: "$2.200",
+        imagen: "img/he11.webp"
+      },
+      {
+        nombre: "HEBRAS NEGRO CHOCOLATE & MENTA DOYPACK X 40 G",
+        precio: "$2.200",
+        imagen: "img/he12.webp"
+      }
+    ];
+    
+  </script>
+</body>
+</html>
